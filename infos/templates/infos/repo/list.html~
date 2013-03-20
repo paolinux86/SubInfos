@@ -1,0 +1,204 @@
+<div id="repos">
+	{% for repo in repo_list %}
+		<div class="repo">
+			<div class="repo_id">{{ repo.id }}</div>
+			<div class="title" title="{{ repo.name }}">{{ repo.name }}</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+	{% empty %}
+		<div>
+			No repositories...
+		</div>
+	{% endfor %}
+			<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+				<div class="repo current">
+			<div class="repo_id">2</div>
+			<div title="Repos mine" class="title">Repos mine</div>
+			<div class="arrowleft bordered"></div>
+			<div class="arrowleft"></div>
+		</div>
+</div>
+
+<script>
+	$(".repo").click(function() {
+		var repo_id = $(this).find(".repo_id").text();
+		$("body").trigger("repo_selected", [ { id: repo_id } ]);
+
+		$(this).siblings(".current").removeClass("current");
+		$(this).addClass("current");
+	});
+</script>

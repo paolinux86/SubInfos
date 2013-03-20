@@ -1,0 +1,20 @@
+<%
+	commit = this[0];
+	steal.dev.log(commit);
+%>
+
+<div id="commit_info" class="row">
+	<div id="author">
+		<span class="label">Autore:</span> <%= commit.username %>
+	</div>
+	<div id="revision">
+		<span class="label">Revisione:</span> <%= commit.revision %>
+	</div>
+	<div id="date">
+		<span class="label">Data:</span> <%= commit.datetime %>
+	</div>
+	<div id="comment">
+		<span class="label">Commento:</span> <%= commit.comment %>
+	</div>
+</div>
+<div id="commit_diff" class="row scroll-y"></div>

@@ -1,0 +1,29 @@
+<%
+	function isInt(n) {
+		return typeof n === 'number' && parseFloat(n) == parseInt(n, 10) && !isNaN(n);
+	}
+
+	var currentRepo = -1;
+	if($.route.attr("resource") == "repo") {
+		currentRepo = $.route.attr("id");
+	}
+%>
+
+<div id="repos">
+	<% if(this.length == 0) { %>
+		<div>
+			No repositories...
+		</div>
+	<% } %>
+	<%
+		for(var i = 0; i < this.length; i++) {
+			var extraclasses = "";
+			if(parseInt(this[i].id) == parseInt(currentRepo)) {
+				extraclasses = " current";
+			}
+	%>
+		<div class="repo<%= extraclasses %>" <%= this[i] %>>
+			<%== $.View('//subinfos/repo/list/views/repo.ejs', this[i]) %>
+		</div>
+	<% } %>
+</div>
