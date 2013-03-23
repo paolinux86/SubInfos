@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+	<head>
+		<title>{% block title %}SubInfos{% endblock %}</title>
+
+		<link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}style.less" />
+		<!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />-->
+		{% block extra_styles %}{% endblock %}
+
+		<script type="text/javascript" src="{{ STATIC_URL }}less-1.3.3.min.js"></script>
+		{% block extra_scripts %}{% endblock %}
+	</head>
+	<body>
+		{% block content %}{% endblock %}
+
+		{% block extra_body_scripts %}{% endblock %}
+	</body>
+</html>

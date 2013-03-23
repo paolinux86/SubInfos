@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.contrib.auth.views import login, logout
 from infos.models import Repository
 from django.conf import settings
 
@@ -25,7 +26,6 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('infos.views',
 	url(r'^$', 'main2'),
-	#url(r'^main$', 'main2'),
 	url(r'^repo/add$', 'repo_add'),
 	url(r'^repo/update/(?P<repo>\d+)$', 'repo_update'),
 	url(r'^repo/(?P<repo>\d+)$', 'repo_show'),
@@ -34,4 +34,9 @@ urlpatterns += patterns('infos.views',
 	url(r'^commit/(?P<commit_id>\d+)/diff', 'getCommitDiff'),
 	url(r'^commit/(?P<commit_id>\d+)', 'commitDetail'),
 	url(r'^pygments\.css', 'pygmentsCss'),
+)
+
+urlpatterns += patterns('',
+	(r'^accounts/login/$', login),
+	(r'^accounts/logout/$', logout),
 )

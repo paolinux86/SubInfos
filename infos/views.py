@@ -13,6 +13,8 @@ import subprocess, os, re
 import json
 import xml.etree.ElementTree as ET
 
+from django.contrib.auth.decorators import login_required
+
 def main(request):
 	return render_to_response(
 		'infos/main.html',
@@ -21,6 +23,7 @@ def main(request):
 		context_instance=RequestContext(request),
 	)
 
+@login_required
 def main2(request):
 	return render_to_response(
 		'infos/index.html',

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}SubInfos - Login{% endblock %}
+
+{% block content %}
+	<div id="user_login_div">
+		<div id="user_login_container" class="tucked-corners top-corners">
+			<form id="user_login" method="post" action=".">
+				<div class="loginrow margintop-10">
+					<input type="hidden" name="next" value="{{ next|escape }}" />
+					{% csrf_token %}
+					<h3 class="ten columns centered">SubInfos</h3>
+				</div>
+
+				<div class="loginrow margintop-30">
+					<label for="username">Username</label>
+					<input type="text" name="username" id="username" />
+				</div>
+
+				<div class="loginrow">
+					<label for="password">Password</label>
+					<input type="password" name="password" id="password" />
+				</div>
+
+				<div class="loginrow">
+					<div class="error_container">
+						{% if form.errors %}
+							Username o password non corretti
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="loginrow margintop-10">
+					<input type="submit" value="Login" class="button" />
+					<div class="clearer"></div>
+				</div>
+			</form>
+			<div class="bottom-corners"></div>
+		</div>
+	</div>
+{% endblock %}
