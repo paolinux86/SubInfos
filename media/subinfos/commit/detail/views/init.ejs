@@ -17,4 +17,28 @@
 		<span class="label">Commento:</span> <%= commit.comment %>
 	</div>
 </div>
-<div id="commit_diff" class="row scroll-y"></div>
+
+<div id="commit_content" class="row scroll-y">
+	<div class="commit_more_details boxed">
+		<table>
+			<tr>
+				<td class="header">Revisione:</td>
+				<td><%= commit.revision %></td>
+			</tr>
+			<tr>
+				<td class="header">Autore:</td>
+				<td><%= commit.username %></td>
+			</tr>
+			<tr>
+				<td class="header">Data:</td>
+				<td><%= commit.datetime %></td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="header">Commento:</div>
+	<p class="commit_comment"><%= commit.comment %></p>
+
+	<div class="header">Modifiche:</div>
+	<div id="commit_diff"></div>
+</div>

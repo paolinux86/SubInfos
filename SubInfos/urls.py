@@ -33,4 +33,5 @@ urlpatterns += patterns('infos.views',
 	url(r'^repo/list/$', 'repo_list'),
 	url(r'^commit/(?P<commit_id>\d+)/diff', 'getCommitDiff'),
 	url(r'^commit/(?P<commit_id>\d+)', 'commitDetail'),
+	url(r'^pygments\.css', 'pygmentsCss'),
 )

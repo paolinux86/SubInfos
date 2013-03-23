@@ -194,6 +194,11 @@ def repo_update(request, repo):
 		context_instance=RequestContext(request),
 	)
 
+def pygmentsCss(request):
+	from pygments.formatters import HtmlFormatter
+	css = HtmlFormatter().get_style_defs('.highlight')
+	return HttpResponse(css, mimetype = 'text/css')
+
 def __callCommand(command):
 	oldLang = os.environ['LANG']
 	os.environ['LANG'] = 'C'
