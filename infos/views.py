@@ -14,14 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 
 from django.contrib.auth.decorators import login_required
-
-def main(request):
-	return render_to_response(
-		'infos/main.html',
-		{
-		},
-		context_instance=RequestContext(request),
-	)
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def main2(request):
@@ -32,31 +25,19 @@ def main2(request):
 		context_instance=RequestContext(request),
 	)
 
-def repo_add(request):
-	return render_to_response(
-		'infos/repo/add.html',
-		{
-		},
-		context_instance=RequestContext(request),
-	)
-
 def repo_list(request):
+	if not request.user.is_authenticated():
+		raise PermissionDenied
+
 	repositories = [ { "id": repo.id, "url": repo.url, "name": repo.name } for repo in Repository.objects.all() ]
 	#repos_json = serializers.serialize("json", repositories)
 	repos_json = json.dumps(repositories)
 	return HttpResponse(repos_json, mimetype = 'application/json')
 
-def repo_show(request, repo):
-	repository = get_object_or_404(Repository, id=repo)
-	return render_to_response(
-		'infos/repo/show.html',
-		{
-			"repository": repository
-		},
-		context_instance=RequestContext(request),
-	)
-
 def commitDetail(request, commit_id):
+	if not request.user.is_authenticated():
+		raise PermissionDenied
+
 	commit = repositories = [ { "id": c.id, "revision": c.revision, "datetime": c.datetime, "comment": c.comment, "username": str(c.username) } for c in Commit.objects.filter(id=commit_id) ]
 
 	dthandler = __getDateHandler()
@@ -64,6 +45,9 @@ def commitDetail(request, commit_id):
 	return HttpResponse(commit_json, mimetype = 'application/json')
 
 def commits(request, repo):
+	if not request.user.is_authenticated():
+		raise PermissionDenied
+
 	repository = get_object_or_404(Repository, id=repo)
 
 	paging_start = int(request.GET.get('iDisplayStart', '0'))
@@ -111,6 +95,9 @@ def getSortingColumnForCommits(sort_col):
 	}.get(sort_col, 'revision')
 
 def getCommitDiff(request, commit_id):
+	if not request.user.is_authenticated():
+		raise PermissionDenied
+
 	commit_id = int(commit_id)
 	commit = get_object_or_404(Commit, id=commit_id)
 	output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(commit.revision - 1), str(commit.revision), commit.repo.username, commit.repo.password, commit.repo.url))

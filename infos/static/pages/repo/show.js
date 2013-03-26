@@ -58,14 +58,22 @@ function dataTablesPipeline(source, data, callback)
 		setKey(data, "iDisplayStart", requestStart);
 		setKey(data, "iDisplayLength", requestLength * pipeSize);
 
-		$.getJSON(source, data, function(json) {
-			cache.lastJson = jQuery.extend(true, {}, json);
-			if(cache.cacheLower != cache.displayStart) {
-				json.aaData.splice(0, cache.displayStart-cache.cacheLower);
-			}
+		$.ajax({
+			dataType: "json",
+			url: source,
+			data: data,
+			success: function(json) {
+				cache.lastJson = jQuery.extend(true, {}, json);
+				if(cache.cacheLower != cache.displayStart) {
+					json.aaData.splice(0, cache.displayStart-cache.cacheLower);
+				}
 
-			json.aaData.splice(cache.displayLength, json.aaData.length);
-			callback(json)
+				json.aaData.splice(cache.displayLength, json.aaData.length);
+				callback(json)
+			},
+			error: function() {
+				window.location.reload();
+			}
 		});
 	} else {
 		json = jQuery.extend(true, {}, cache.lastJson);

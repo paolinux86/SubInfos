@@ -20,7 +20,10 @@ steal( 'jquery/controller',
 	/** @Prototype */
 	{
 		init : function() {
-			this.element.html(this.view('init', Subinfos.Models.Repo.findAll()));
+			var repos = Subinfos.Models.Repo.findAll({}, null, function() {
+				window.location.reload(true);
+			});
+			this.element.html(this.view('init', repos));
 		},
 		".repo click": function(el, ev) {
 			var repo_id = el.model().id;
