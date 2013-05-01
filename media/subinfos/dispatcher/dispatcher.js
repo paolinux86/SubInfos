@@ -59,7 +59,10 @@ steal( "jquery/controller",
 // 					$([Gcm.User.Login]).trigger("show");
 // 					break;
 				default:
-					this.showError404();
+					if(window.location.hash.startsWith("#!")) {
+						this.showError404();
+					} // else ignore
+
 					break;
 			}
 		},

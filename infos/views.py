@@ -6,8 +6,9 @@ from django.template import RequestContext
 from django.db import connection, transaction
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
-from infos.models import *
 from django.core import serializers
+from infos.models import *
+from libs.svndiff2html.svndiff2html.SvnDiff2Html import SvnDiff2Html
 
 import subprocess, os, re
 import json
@@ -22,7 +23,7 @@ def main2(request):
 		'infos/index.html',
 		{
 		},
-		context_instance=RequestContext(request),
+		context_instance = RequestContext(request),
 	)
 
 def repo_list(request):
@@ -30,7 +31,7 @@ def repo_list(request):
 		raise PermissionDenied
 
 	repositories = [ { "id": repo.id, "url": repo.url, "name": repo.name } for repo in Repository.objects.all() ]
-	#repos_json = serializers.serialize("json", repositories)
+	# repos_json = serializers.serialize("json", repositories)
 	repos_json = json.dumps(repositories)
 	return HttpResponse(repos_json, mimetype = 'application/json')
 
@@ -38,7 +39,7 @@ def commitDetail(request, commit_id):
 	if not request.user.is_authenticated():
 		raise PermissionDenied
 
-	commit = repositories = [ { "id": c.id, "revision": c.revision, "datetime": c.datetime, "comment": c.comment, "username": str(c.username) } for c in Commit.objects.filter(id=commit_id) ]
+	commit = repositories = [ { "id": c.id, "revision": c.revision, "datetime": c.datetime, "comment": c.comment, "username": str(c.username) } for c in Commit.objects.filter(id = commit_id) ]
 
 	dthandler = __getDateHandler()
 	commit_json = json.dumps(commit, default = dthandler)
@@ -48,7 +49,7 @@ def commits(request, repo):
 	if not request.user.is_authenticated():
 		raise PermissionDenied
 
-	repository = get_object_or_404(Repository, id=repo)
+	repository = get_object_or_404(Repository, id = repo)
 
 	paging_start = int(request.GET.get('iDisplayStart', '0'))
 	paging_limit = int(request.GET.get('iDisplayLength', '10'))
@@ -63,11 +64,11 @@ def commits(request, repo):
 	order_by_clause += getSortingColumnForCommits(sort_col)
 
 	if paging_limit > 0:
-		commitsFromDB = Commit.objects.filter(repo=repo).order_by(order_by_clause)[paging_start:paging_limit]
+		commitsFromDB = Commit.objects.filter(repo = repo).order_by(order_by_clause)[paging_start:paging_limit]
 	else:
-		commitsFromDB = Commit.objects.filter(repo=repo).order_by(order_by_clause)
+		commitsFromDB = Commit.objects.filter(repo = repo).order_by(order_by_clause)
 
-	commit_count = Commit.objects.filter(repo=repo).count()
+	commit_count = Commit.objects.filter(repo = repo).count()
 
 	commits = []
 	i = 0
@@ -99,21 +100,31 @@ def getCommitDiff(request, commit_id):
 		raise PermissionDenied
 
 	commit_id = int(commit_id)
-	commit = get_object_or_404(Commit, id=commit_id)
-	output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(commit.revision - 1), str(commit.revision), commit.repo.username, commit.repo.password, commit.repo.url))
-	
-	from pygments import highlight
-	from pygments.lexers import get_lexer_by_name
-	from pygments.formatters import HtmlFormatter
+	commit = get_object_or_404(Commit, id = commit_id)
 
-	lexer = get_lexer_by_name("diff", stripall=True)
-	html_output = highlight(output, lexer, HtmlFormatter())
+	html_output = ""
+	if commit.repo.url.startswith("/"):
+		files = __callCommand("svnlook changed /svn/invaders3/ -r 1")
+		diff_output = __callCommand("svnlook diff -r %s \"%s\"" % (str(commit.revision), commit.repo.url))
+		files_output = __callCommand("svnlook changed -r %s \"%s\"" % (str(commit.revision), commit.repo.url))
+		diffHandler = SvnDiff2Html(diff_output, files_output)
+		html_output += diffHandler.output_file_lists()
+		html_output += diffHandler.output_formatted_diff()
+	else:
+		output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(commit.revision - 1), str(commit.revision), commit.repo.username, commit.repo.password, commit.repo.url))
+
+		from pygments import highlight
+		from pygments.lexers import get_lexer_by_name
+		from pygments.formatters import HtmlFormatter
+
+		lexer = get_lexer_by_name("diff", stripall = True)
+		html_output = highlight(output, lexer, HtmlFormatter())
 
 	return HttpResponse(html_output, mimetype = 'text/html')
 
 def repo_update(request, repo):
-	#result = subprocess.check_output(["echo", "Hello World!"])
-	repository = get_object_or_404(Repository, id=repo)
+	# result = subprocess.check_output(["echo", "Hello World!"])
+	repository = get_object_or_404(Repository, id = repo)
 
 	cursor = connection.cursor()
 	cursor.execute("SELECT revision FROM infos_commit WHERE repo_id = %s ORDER BY revision DESC LIMIT 1" % (repo))
@@ -143,7 +154,7 @@ def repo_update(request, repo):
 			{
 				'result': "error"
 			},
-			context_instance=RequestContext(request),
+			context_instance = RequestContext(request),
 		)
 
 	for revision in range(last_saved + 1, current_revision):
@@ -162,17 +173,17 @@ def repo_update(request, repo):
 
 		author = logentry.find("author").text
 		try:
-			username = Username.objects.get(username=author)
+			username = Username.objects.get(username = author)
 		except ObjectDoesNotExist:
-			Username.objects.create(username=author)
-			username = Username.objects.get(username=author)
+			Username.objects.create(username = author)
+			username = Username.objects.get(username = author)
 
-		commit = Commit(revision=str(revision), datetime=timestampAsDateTime, comment=comment, repo=repository, username=username)
+		commit = Commit(revision = str(revision), datetime = timestampAsDateTime, comment = comment, repo = repository, username = username)
 		commit.save()
 
-		#output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(revision - 1), str(revision), repository.username, repository.password, repo_url))
-		#commit_diff = CommitDiff(commit=commit, diff=output)
-		#commit_diff.save()
+		# output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(revision - 1), str(revision), repository.username, repository.password, repo_url))
+		# commit_diff = CommitDiff(commit=commit, diff=output)
+		# commit_diff.save()
 
 	result = "nothing..."
 
@@ -181,7 +192,7 @@ def repo_update(request, repo):
 		{
 			'result': result
 		},
-		context_instance=RequestContext(request),
+		context_instance = RequestContext(request),
 	)
 
 def pygmentsCss(request):
@@ -189,11 +200,15 @@ def pygmentsCss(request):
 	css = HtmlFormatter().get_style_defs('.highlight')
 	return HttpResponse(css, mimetype = 'text/css')
 
+def svnDiffCss(request):
+	css = SvnDiff2Html("", "").output_css()
+	return HttpResponse(css, mimetype = 'text/css')
+
 def __callCommand(command):
 	oldLang = os.environ['LANG']
 	os.environ['LANG'] = 'C'
 	try:
-		result = subprocess.check_output(command, shell=True)
+		result = subprocess.check_output(command, shell = True)
 	finally:
 		os.environ['LANG'] = oldLang
 

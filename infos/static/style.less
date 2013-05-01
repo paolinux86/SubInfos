@@ -267,12 +267,14 @@ h3 {
 
 .upper {
 	height: 40%;
+	resize: vertical;
 }
 
 .lower {
 	border-top: 2px solid lighten(@head_foot-color, 15%);
 	top: 40%;
-	height: 60%;	
+	height: 60%;
+	resize: vertical;
 }
 
 @commit_info-height: 52px;
@@ -356,7 +358,7 @@ h3 {
 }
 
 #commit_content {
-	top: (@commit_info-height + 2 * @commit_info-padding);
+	top: (@commit_info-height + 2 * @commit_info-padding) + 1px;
 	bottom: 2px;
 	font-size: 0.85em;
 

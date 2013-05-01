@@ -19,7 +19,7 @@ steal('jquery/controller',
 			var commit = Subinfos.Models.Commit.findOne(params, null, function() {
 				window.location.reload();
 			});
-			this.element.html("//subinfos/commit/detail/views/init.ejs", , function() {
+			this.element.html("//subinfos/commit/detail/views/init.ejs", commit, function() {
 				$("#commit_diff").html(""); //TODO: loading...
 				$("#commit_diff").load("/commit/" + params.id + "/diff", function(response, status, xhr) {
 					if(status == "error") {

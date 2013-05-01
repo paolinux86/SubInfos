@@ -32,6 +32,7 @@ urlpatterns += patterns('infos.views',
 	url(r'^commit/(?P<commit_id>\d+)/diff', 'getCommitDiff'),
 	url(r'^commit/(?P<commit_id>\d+)', 'commitDetail'),
 	url(r'^pygments\.css', 'pygmentsCss'),
+	url(r'^svn_diff\.css', 'svnDiffCss'),
 )
 
 urlpatterns += patterns('',

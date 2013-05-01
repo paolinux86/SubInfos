@@ -1,0 +1,3 @@
+[submodule "libs/svndiff2html"]
+	path = libs/svndiff2html
+	url = git@github.com:paolinux86/SvnDiff2Html.git
