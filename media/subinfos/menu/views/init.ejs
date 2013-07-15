@@ -1,4 +1,44 @@
-<div class="item">
+<%
+	steal.dev.log(this);
+
+	$.each(this, function(index, item) {
+%>
+		<div class="item">
+			<span class="title"><%= item.name %></span>
+			<div class="submenu">
+<%
+		$.each(item.items, function(sub_index, sub_item) {
+			if(sub_item.type == "separator") {
+%>
+				<div class="separator"></div>
+<%
+			} else {
+%>
+				<div class="item" <%= new Subinfos.Models.Menu(sub_item) %>><%= sub_item.name %></div>
+<%
+			}
+		});
+%>
+			</div>
+		</div>
+<%
+	});
+
+%>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--div class="item">
 	<span class="title">File</span>
 	<div class="submenu">
 		<div class="item">Apri</div>
@@ -18,4 +58,4 @@
 	<div class="submenu">
 		<div id="menu_about" class="item">About...</div>
 	</div>
-</div>
+</div-->

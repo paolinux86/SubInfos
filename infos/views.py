@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.db import connection, transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.core import serializers
 from infos.models import *
@@ -216,3 +217,21 @@ def __callCommand(command):
 
 def __getDateHandler():
 	return lambda obj: obj.strftime("%d/%m/%Y %H:%M:%S") if isinstance(obj, datetime) else None
+
+def getUserMenu(request):
+	if not request.user.is_authenticated():
+		raise PermissionDenied
+
+	menu = [ ]
+
+	if request.user.is_staff:
+		fileMenu = { "name": "file", "items": [ ] }
+		fileMenu["items"].append({ "name": "goToPanel", "type": "link", "url": reverse("admin:index") })
+		menu.append(fileMenu)
+
+	helpMenu = { "name": "help", "items": [ ] }
+	helpMenu["items"].append({ "name": "openInfo", "type": "dialog", "dialog": "info" })
+	menu.append(helpMenu)
+
+	menu_json = json.dumps(menu)
+	return HttpResponse(menu_json, mimetype = 'application/json')
