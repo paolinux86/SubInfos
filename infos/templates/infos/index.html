@@ -19,28 +19,13 @@
 		<div id="menu"></div>
 	</div>
 	<div class="left col">
-		<div class="toolbar row">
-			<div class="button add disabled" title="Add"></div>
-			<div class="button delete" title="Delete"></div>
-			<div class="button edit" title="Edit"></div>
-			<div class="button refresh" title="Refresh"></div>
-		</div>
+		<div id="left_toolbar" class="toolbar row"></div>
 		<div id="repo_list" class="body row scroll-y"></div>
 	</div>
 	<div class="right col">
-		<div class="toolbar row">
-			<div class="button add"></div>
-			<div class="button delete"></div>
-			<div class="button edit"></div>
-			<div class="button refresh"></div>
-			<div class="search">
-				<input type="text" placeholder="Testo da cercare" /><input type="button" value="Cerca" />
-			</div>
-		</div>
+		<div id="right_toolbar" class="toolbar row"></div>
 		<div class="body row">
-			<div id="commit_list" class="upper row scroll-y">
-				<div id="no_repo_selected">Seleziona un repository dalla lista</div>
-			</div>
+			<div id="commit_list" class="upper row"></div>
 			<div id="commit_detail" class="lower row"></div>
 		</div>
 	</div>

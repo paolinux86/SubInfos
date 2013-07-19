@@ -18,6 +18,9 @@ import xml.etree.ElementTree as ET
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
+import logging
+logger = logging.getLogger(__name__)
+
 @login_required
 def main2(request):
 	return render_to_response(
@@ -57,6 +60,10 @@ def commits(request, repo):
 	sort_col = int(request.GET.get('iSortCol_0', '0'))
 	sort_direction = request.GET.get('sSortDir_0', 'asc')
 	sEcho = request.GET.get('sEcho', '0')
+	search = request.GET.get("sSearch", "")
+
+	#print paging_start
+	#print paging_limit
 
 	order_by_clause = ""
 	if sort_direction == "desc":
@@ -64,12 +71,21 @@ def commits(request, repo):
 
 	order_by_clause += getSortingColumnForCommits(sort_col)
 
-	if paging_limit > 0:
-		commitsFromDB = Commit.objects.filter(repo = repo).order_by(order_by_clause)[paging_start:paging_limit]
-	else:
-		commitsFromDB = Commit.objects.filter(repo = repo).order_by(order_by_clause)
+	commitsFromDB = Commit.objects.filter(repo = repo)
+	commit_count = commitsFromDB.count()
 
-	commit_count = Commit.objects.filter(repo = repo).count()
+	if search != "":
+		from django.db.models import Q
+		commitsFromDB = commitsFromDB.filter(Q(revision__contains=search) | Q(username__username__contains=search) | Q(datetime__contains=search) | Q(comment__contains=search))
+
+	commitsFromDB = commitsFromDB.order_by(order_by_clause)
+
+	if paging_limit > 0:
+		#print "limiting results from %d, %d elements" % (paging_start, paging_limit)
+		paging_end = paging_start + paging_limit
+		#print commitsFromDB.count()
+		commitsFromDB = commitsFromDB[paging_start:paging_end]
+		#print commitsFromDB.count()
 
 	commits = []
 	i = 0

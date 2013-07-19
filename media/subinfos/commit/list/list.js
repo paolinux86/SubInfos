@@ -1,7 +1,11 @@
-steal('jquery/controller',
-	  'jquery/view/ejs',
-	  '/static/jquery.dataTables.min.js')
-.then('./views/init.ejs',
+steal(
+	"jquery/controller",
+	"jquery/view/ejs",
+	"/static/jquery.dataTables.min.js"
+)
+.then(
+	"./views/init.ejs",
+	"./views/no_repo_selected.ejs",
 
 function($) {
 	/**
@@ -10,7 +14,7 @@ function($) {
 	* @inherits jQuery.Controller
 	* Lists commits and lets you destroy them.
 	*/
-	$.Controller('Subinfos.Commit.List',
+	$.Controller("Subinfos.Commit.List",
 	/** @Static */
 	{
 		defaults : {}
@@ -18,20 +22,33 @@ function($) {
 	/** @Prototype */
 	{
 		init : function() {
+			this.element.html("//subinfos/commit/list/views/no_repo_selected.ejs", { });
+		},
+		"{Subinfos.Repo.List} deselect": function() {
+			this.init();
 		},
 		"{Subinfos.Repo.List} repo_selected": function(el, ev, params) {
+			steal.dev.log("repo_selected");
+			steal.dev.log(params);
+			$([Subinfos.Toolbar]).trigger("enableSearch");
+			//DataTable.ext.sErrMode = "throw";
 			this.element.html("//subinfos/commit/list/views/init.ejs", { }, function() {
-				$('#commits_table').dataTable({
+				steal.dev.log("init table");
+				$("#commits_table").dataTable({
+					bScrollCollapse: true,
+					sScrollY: "200",
 					bPaginate: false,
 					bInfo: false,
 					bLengthChange: false,
-					bFilter: false,
+					bFilter: true,
 					bProcessing: true,
 					bServerSide: true,
 					sAjaxSource: "/repo/" + params.id + "/commits",
 					fnServerData: dataTablesPipeline,
+					bDeferRender: true,
+					aaSorting: [[ 4, "desc" ]],
 					aoColumns: [
-						{ bVisible: false },
+						{ bVisible: false, asSorting: [  ] },
 						null,
 						{ asSorting: [  ] },
 						null,
@@ -39,11 +56,11 @@ function($) {
 					]
 				});
 
-				jQuery.fn.dataTableExt.oSort['html-undefined']  = function(a,b) {
+				jQuery.fn.dataTableExt.oSort["html-undefined"]  = function(a,b) {
 					return false;
 				};
-				$('.sorting_disabled').unbind('click');
-				$('.sorting_disabled').css("cursor", "default");
+				$(".sorting_disabled").unbind("click");
+				$(".sorting_disabled").css("cursor", "default");
 			});
 		},
 		"#commits_table tr click": function(el, ev) {

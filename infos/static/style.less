@@ -267,14 +267,12 @@ h3 {
 
 .upper {
 	height: 40%;
-	resize: vertical;
 }
 
 .lower {
 	border-top: 2px solid lighten(@head_foot-color, 15%);
 	top: 40%;
 	height: 60%;
-	resize: vertical;
 }
 
 @commit_info-height: 52px;
@@ -513,6 +511,48 @@ table#commits_table tr.odd td.sorting_1 {
 
 table#commits_table tr.even td.sorting_1 {
 	background-color: transparent;
+}
+
+#commits_table_filter {
+	display: none;
+}
+
+#commits, #commits_table_wrapper, .dataTables_scroll {
+	height: 100%;
+}
+
+.dataTables_scrollHead {
+	background-color: @window-color;
+	position: absolute !important;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 25px;
+
+	thead th {
+		background-color: @window-color;
+		border-right: 1px dashed @window-border-color;
+		border-bottom: 1px solid #a4a4a4 !important;
+		font-weight: normal !important;
+		text-align: left;
+
+		padding: inherit;
+
+		&:last-child {
+			border-right: 0;
+		}
+	}
+}
+
+.dataTables_scrollBody {
+	height: auto !important;
+	position: absolute !important;
+	overflow: visible !important;
+	overflow-y: auto !important;
+	top: 25px;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .dialogcontainer.modal {

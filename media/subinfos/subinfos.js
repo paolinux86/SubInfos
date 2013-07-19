@@ -1,22 +1,25 @@
 steal(
-	'./models/models.js',		// steals all your models
-	//'./fixtures/fixtures.js',	// sets up fixtures for your models
+	"./models/models.js",		// steals all your models
+	//"./fixtures/fixtures.js",	// sets up fixtures for your models
 	"jquery/dom/route",
 	"subinfos/dispatcher")
 .then(
-	'subinfos/menu',
-	'subinfos/repo/list',
-	'subinfos/commit/list',
-	'subinfos/commit/detail'
+	"subinfos/menu",
+	"subinfos/repo/list",
+	"subinfos/commit/list",
+	"subinfos/commit/detail",
+	"subinfos/toolbar"
 )
 .then(
 	function(){					// configure your application
 		$("body").subinfos_dispatcher();
 
-		$('#menu').subinfos_menu();
-		$('#repo_list').subinfos_repo_list();
-		$('#commit_list').subinfos_commit_list();
-		$('#commit_detail').subinfos_commit_detail();
+		$("#menu").subinfos_menu();
+		$("#left_toolbar").subinfos_toolbar();
+		$("#right_toolbar").subinfos_toolbar({ search: true });
+		$("#repo_list").subinfos_repo_list();
+		$("#commit_list").subinfos_commit_list();
+		$("#commit_detail").subinfos_commit_detail();
 
 		$.route.ready(true);
 

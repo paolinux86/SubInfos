@@ -2,8 +2,8 @@ steal( 'jquery/controller',
 	   'jquery/view/ejs',
 	   'jquery/controller/view',
 	   'subinfos/models' )
-.then( './views/init.ejs', 
-       './views/repo.ejs', 
+.then( './views/init.ejs',
+       './views/repo.ejs',
        function($){
 
 	/**
@@ -42,6 +42,9 @@ steal( 'jquery/controller',
 				$item.siblings(".current").removeClass("current");
 				$item.addClass("current");
 			});
+		},
+		"{Subinfos.Repo.List} deselect": function(el, ev, params) {
+			this.element.find(".repo .current").removeClass("current");
 		}
 	});
 });
