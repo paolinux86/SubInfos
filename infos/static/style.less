@@ -227,6 +227,37 @@ h3 {
 
 	.search {
 		float: right;
+		margin-top: -2px;
+	}
+
+	#buttonToolbarButton {
+		float: right;
+		cursor: pointer;
+		text-indent: -9999px;
+		white-space: nowrap;
+		width: 16px;
+		height: 32px;
+		margin-top: -6px;
+		margin-left: 5px;
+
+		&.opener {
+			background: url(/static/imgs/ar_left.png) no-repeat center center;
+		}
+		&.closer {
+			background: url(/static/imgs/ar_right.png) no-repeat center center;
+		}
+	}
+
+	#buttonToolbar {
+		float: right;
+		display: inline-block;
+		font-size: 0.8em;
+		margin-left: 5px;
+
+		* {
+			display: none;
+			vertical-align: middle;
+		}
 	}
 }
 

@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.core import serializers
 from infos.models import *
+from infos.managers import *
 from libs.svndiff2html.svndiff2html.SvnDiff2Html import SvnDiff2Html
 
 import subprocess, os, re
@@ -62,6 +63,11 @@ def commits(request, repo):
 	sEcho = request.GET.get('sEcho', '0')
 	search = request.GET.get("sSearch", "")
 
+	fil_revision = request.GET.get("fil_revision", "false") == "true"
+	fil_user = request.GET.get("fil_user", "false") == "true"
+	fil_comment = request.GET.get("fil_comment", "false") == "true"
+	fil_content = request.GET.get("fil_content", "false") == "true"
+
 	#print paging_start
 	#print paging_limit
 
@@ -76,7 +82,34 @@ def commits(request, repo):
 
 	if search != "":
 		from django.db.models import Q
-		commitsFromDB = commitsFromDB.filter(Q(revision__contains=search) | Q(username__username__contains=search) | Q(datetime__contains=search) | Q(comment__contains=search))
+
+		if fil_revision:
+			if fil_user:
+				if fil_comment:
+					print "all three"
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(username__username__contains=search) | Q(comment__contains=search))
+				else:
+					print "revision and username"
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(username__username__contains=search))
+			else:
+				if fil_comment:
+					print "revision and comment"
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(comment__contains=search))
+				else:
+					print "revision only"
+					commitsFromDB = commitsFromDB.filter(Q(revision=search))
+		else:
+			if fil_user:
+				if fil_comment:
+					print "username and comment"
+					commitsFromDB = commitsFromDB.filter(Q(username__username__contains=search) | Q(comment__contains=search))
+				else:
+					print "username only"
+					commitsFromDB = commitsFromDB.filter(Q(username__username__contains=search))
+			else:
+				if fil_comment:
+					print "comment only"
+					commitsFromDB = commitsFromDB.filter(Q(comment__contains=search))
 
 	commitsFromDB = commitsFromDB.order_by(order_by_clause)
 
@@ -89,16 +122,24 @@ def commits(request, repo):
 
 	commits = []
 	i = 0
-	for obj in commitsFromDB:
-		commits.append([])
-		commits[i].append(obj.id)
-		commits[i].append(obj.revision)
-		commits[i].append(obj.comment)
-		commits[i].append(str(obj.username))
-		commits[i].append(obj.datetime)
-		i += 1
+	filter_count = commitsFromDB.count()
+	if filter_count > 1:
+		for obj in commitsFromDB:
+			commits.append([])
+			commits[i].append(obj.id)
+			commits[i].append(obj.revision)
+			commits[i].append(obj.comment)
+			commits[i].append(str(obj.username))
+			commits[i].append(obj.datetime)
+			i += 1
+	elif filter_count == 1:
+		obj = commitsFromDB[0]
+		commits.append(obj.id)
+		commits.append(obj.revision)
+		commits.append(obj.comment)
+		commits.append(str(obj.username))
+		commits.append(obj.datetime)
 
-	filter_count = i
 
 	dthandler = __getDateHandler()
 	commits_json = json.dumps(commits, default = dthandler)
@@ -116,26 +157,8 @@ def getCommitDiff(request, commit_id):
 	if not request.user.is_authenticated():
 		raise PermissionDenied
 
-	commit_id = int(commit_id)
-	commit = get_object_or_404(Commit, id = commit_id)
-
-	html_output = ""
-	if commit.repo.url.startswith("/"):
-		files = __callCommand("svnlook changed /svn/invaders3/ -r 1")
-		diff_output = __callCommand("svnlook diff -r %s \"%s\"" % (str(commit.revision), commit.repo.url))
-		files_output = __callCommand("svnlook changed -r %s \"%s\"" % (str(commit.revision), commit.repo.url))
-		diffHandler = SvnDiff2Html(diff_output, files_output)
-		html_output += diffHandler.output_file_lists()
-		html_output += diffHandler.output_formatted_diff()
-	else:
-		output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(commit.revision - 1), str(commit.revision), commit.repo.username, commit.repo.password, commit.repo.url))
-
-		from pygments import highlight
-		from pygments.lexers import get_lexer_by_name
-		from pygments.formatters import HtmlFormatter
-
-		lexer = get_lexer_by_name("diff", stripall = True)
-		html_output = highlight(output, lexer, HtmlFormatter())
+	commitDiff = CommitDiff.objects.get(commit = commit_id)
+	html_output = commitDiff.diff
 
 	return HttpResponse(html_output, mimetype = 'text/html')
 
@@ -155,6 +178,10 @@ def repo_update(request, repo):
 	last_saved = current_revision
 
 	repo_url = repository.url
+	if repo_url.startswith("/"):
+		print "local repo"
+		repo_url = "svn://localhost" + repo_url
+
 	command = "svn info \"%s\" --username \"%s\" --password \"%s\"" % (repo_url, repository.username, repository.password)
 
 	svn_info = __callCommand(command)
@@ -174,7 +201,7 @@ def repo_update(request, repo):
 			context_instance = RequestContext(request),
 		)
 
-	for revision in range(last_saved + 1, current_revision):
+	for revision in range(last_saved + 1, current_revision + 1):
 		output = __callCommand("svn log --xml -r %s --username \"%s\" --password \"%s\" \"%s\"" % (str(revision), repository.username, repository.password, repo_url))
 		print output
 		root = ET.fromstring(output)
@@ -198,9 +225,10 @@ def repo_update(request, repo):
 		commit = Commit(revision = str(revision), datetime = timestampAsDateTime, comment = comment, repo = repository, username = username)
 		commit.save()
 
+		output = CommitsManager.getCommitDiff(commit)
 		# output = __callCommand("svn diff -r %s:%s --username \"%s\" --password \"%s\" \"%s\"" % (str(revision - 1), str(revision), repository.username, repository.password, repo_url))
-		# commit_diff = CommitDiff(commit=commit, diff=output)
-		# commit_diff.save()
+		commit_diff = CommitDiff(commit=commit, diff=output)
+		commit_diff.save()
 
 	result = "nothing..."
 

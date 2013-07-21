@@ -2,6 +2,14 @@ function dataTablesPipeline(source, data, callback)
 {
 	var dataTable = this;
 
+	var search = getKey(data, "sSearch");
+	if(search != "") {
+		data.push({"name": "fil_revision", "value": $("#filter_revision").is(":checked") });
+		data.push({"name": "fil_comment", "value": $("#filter_comment").is(":checked") });
+		data.push({"name": "fil_user", "value": $("#filter_user").is(":checked") });
+		data.push({"name": "fil_content", "value": $("#filter_content").is(":checked") });
+	}
+
 	var displayStart = 0;
 	var displayLength = 10;
 	setKey(data, "iDisplayLength", displayLength);
@@ -9,6 +17,10 @@ function dataTablesPipeline(source, data, callback)
 	var completed = false;
 	var index = getKey(data, "sEcho");
 	var isFirst = true;
+
+	disableServerSide(dataTable);
+	dataTable.fnClearTable();
+	enableServerSide(dataTable);
 	do {
 		setKey(data, "iDisplayStart", displayStart);
 		setKey(data, "sEcho", index);
@@ -20,13 +32,13 @@ function dataTablesPipeline(source, data, callback)
 			async: false,
 			success: function(json) {
 				steal.dev.log("success");
-				if(json.iTotalDisplayRecords == 0) {
+				if(json.length == 0 || json.iTotalDisplayRecords == 0) {
 					completed = true;
 					return;
 				}
 
 				completed = (json.iTotalDisplayRecords < displayLength);
-				if(isFirst) {
+				if(isFirst && !(json.length == 1 || json.iTotalDisplayRecords == 1)) {
 					callback(json);
 				} else {
 					addDataToTable(dataTable, json);
@@ -42,6 +54,8 @@ function dataTablesPipeline(source, data, callback)
 		index++;
 		isFirst = false;
 	} while(!completed);
+
+	$("#commits_table_processing").css("visibility", "hidden");
 }
 
 function disableServerSide(dataTable)

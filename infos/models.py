@@ -53,7 +53,7 @@ class Commit(models.Model):
 		verbose_name_plural = _("Commits")
 
 class CommitDiff(models.Model):
-	commit = models.ForeignKey("Commit")
+	commit = models.OneToOneField(Commit)
 	diff = models.TextField()
 
 	def __unicode__(self):

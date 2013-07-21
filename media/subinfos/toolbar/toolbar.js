@@ -18,7 +18,9 @@ steal(
 		/** @Prototype */
 		{
 			init : function() {
-				this.element.html("//subinfos/toolbar/views/init.ejs", this.options);
+				this.element.html("//subinfos/toolbar/views/init.ejs", this.options, function() {
+// 					$("#buttonToolbar").buttonset();
+				});
 			},
 			"#searchField keyup": function(el, ev) {
 				if(ev.which == 13) {
@@ -48,6 +50,18 @@ steal(
 			"{Subinfos.Toolbar} enableSearch": function() {
 				$("#searchButton").removeAttr("disabled");
 				$("#searchField").removeAttr("disabled");
+				$("#buttonToolbar").children().removeAttr("disabled");
+			},
+			"#buttonToolbarButton click": function() {
+				if($("#buttonToolbarButton").hasClass("opener")) {
+					$("#buttonToolbar").children().show();
+					$("#buttonToolbarButton").removeClass("opener");
+					$("#buttonToolbarButton").addClass("closer");
+				} else {
+					$("#buttonToolbar").children().hide();
+					$("#buttonToolbarButton").removeClass("closer");
+					$("#buttonToolbarButton").addClass("opener");
+				}
 			}
 		});
 	}

@@ -21,6 +21,8 @@ function($) {
 	},
 	/** @Prototype */
 	{
+		_resizeTimer: null,
+
 		init : function() {
 			this.element.html("//subinfos/commit/list/views/no_repo_selected.ejs", { });
 		},
@@ -32,6 +34,8 @@ function($) {
 			steal.dev.log(params);
 			$([Subinfos.Toolbar]).trigger("enableSearch");
 			//DataTable.ext.sErrMode = "throw";
+
+			var instance = this;
 			this.element.html("//subinfos/commit/list/views/init.ejs", { }, function() {
 				steal.dev.log("init table");
 				$("#commits_table").dataTable({
@@ -61,6 +65,8 @@ function($) {
 				};
 				$(".sorting_disabled").unbind("click");
 				$(".sorting_disabled").css("cursor", "default");
+
+				instance.setupResize();
 			});
 		},
 		"#commits_table tr click": function(el, ev) {
@@ -72,6 +78,20 @@ function($) {
 
 			//$("body").trigger("commit_selected", [ { id: data[0] } ]);
 			$([Subinfos.Commit.List]).trigger("commit_selected", { id: data[0] });
+		},
+		setupResize: function() {
+			var instance = this;
+			$(window).resize(function() {
+				clearTimeout(instance._resizeTimer);
+				instance._resizeTimer = setTimeout(instance.redrawTable, 100);
+			});
+		},
+		redrawTable: function() {
+			var dataTable = $("#commits_table").dataTable();
+
+			disableServerSide(dataTable);
+			dataTable.fnDraw();
+			enableServerSide(dataTable);
 		}
 	});
 });

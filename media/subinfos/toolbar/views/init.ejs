@@ -1,8 +1,19 @@
 <div class="button refresh" title="Aggiorna"></div>
 
 <% if(this.search === true) { %>
+
+<div id="buttonToolbar">
+	<input type="checkbox" id="filter_revision" checked="checked" disabled="disabled" /><label for="filter_revision" disabled="disabled">Revision</label>
+	<input type="checkbox" id="filter_comment" checked="checked" disabled="disabled" /><label for="filter_comment" disabled="disabled">Comment</label>
+	<input type="checkbox" id="filter_user" checked="checked" disabled="disabled" /><label for="filter_user" disabled="disabled">User</label>
+	<!--<input type="checkbox" id="filter_content" disabled="disabled" /><label for="filter_content" disabled="disabled">Content</label>-->
+</div>
+
+<div id="buttonToolbarButton" class="opener">+</div>
+
 <div class="search">
 	<input id="searchField" type="text" placeholder="Testo da cercare" disabled="disabled" />
 	<input id="searchButton" type="button" value="Cerca" disabled="disabled" />
 </div>
+
 <% } %>

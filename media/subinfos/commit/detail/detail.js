@@ -27,6 +27,22 @@ steal('jquery/controller',
 					}
 				});
 			});
+		},
+		"a click": function(el, ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var element = $(el).attr('href');
+			this.scrollToDiv($(element));
+		},
+		scrollToDiv: function(element) {
+			var offset = element.position();
+			var offsetTop = offset.top;
+			var totalScroll = offsetTop;
+
+			$("#commit_content").animate({
+				scrollTop: totalScroll
+			}, 200);
 		}
 	});
 });

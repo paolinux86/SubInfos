@@ -11,7 +11,8 @@ steal(
 	"subinfos/toolbar"
 )
 .then(
-	function(){					// configure your application
+	function()
+	{					// configure your application
 		$("body").subinfos_dispatcher();
 
 		$("#menu").subinfos_menu();
