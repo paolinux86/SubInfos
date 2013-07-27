@@ -38,11 +38,11 @@ function dataTablesPipeline(source, data, callback)
 				}
 
 				completed = (json.iTotalDisplayRecords < displayLength);
-				if(isFirst && !(json.length == 1 || json.iTotalDisplayRecords == 1)) {
-					callback(json);
-				} else {
+// 				if(isFirst && !(json.length == 1 || json.iTotalDisplayRecords == 1)) {
+// 					callback(json);
+// 				} else {
 					addDataToTable(dataTable, json);
-				}
+// 				}
 			},
 			error: function() {
 				steal.dev.log("error");

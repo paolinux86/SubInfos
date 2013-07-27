@@ -1,7 +1,8 @@
 steal(
 	"jquery/controller",
 	"jquery/view/ejs",
-	"/static/jquery.dataTables.min.js"
+	"/static/jquery.dataTables.min.js",
+	"subinfos/scripts/mine/commit_list.js"
 )
 .then(
 	"./views/init.ejs",
