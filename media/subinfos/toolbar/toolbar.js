@@ -62,6 +62,13 @@ steal(
 					$("#buttonToolbarButton").removeClass("closer");
 					$("#buttonToolbarButton").addClass("opener");
 				}
+			},
+
+			".refresh click": function(el, ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				$([Subinfos.Toolbar]).trigger("refresh", this.options.context);
 			}
 		});
 	}

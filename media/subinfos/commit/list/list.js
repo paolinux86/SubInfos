@@ -23,6 +23,7 @@ function($) {
 	/** @Prototype */
 	{
 		_resizeTimer: null,
+		_currentParams: null,
 
 		init : function() {
 			this.element.html("//subinfos/commit/list/views/no_repo_selected.ejs", { });
@@ -31,6 +32,10 @@ function($) {
 			this.init();
 		},
 		"{Subinfos.Repo.List} repo_selected": function(el, ev, params) {
+			this._currentParams = params;
+			this._repo_selected(params);
+		},
+		_repo_selected: function(params) {
 			steal.dev.log("repo_selected");
 			steal.dev.log(params);
 			$([Subinfos.Toolbar]).trigger("enableSearch");
@@ -93,6 +98,14 @@ function($) {
 			disableServerSide(dataTable);
 			dataTable.fnDraw();
 			enableServerSide(dataTable);
+		},
+
+		"{Subinfos.Toolbar} refresh": function(el, ev, context) {
+			if(context != ToolbarContext.COMMITS_TOOLBAR) {
+				return;
+			}
+
+			this._repo_selected(this._currentParams);
 		}
 	});
 });
