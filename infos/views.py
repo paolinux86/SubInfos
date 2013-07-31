@@ -80,21 +80,23 @@ def commits(request, repo):
 	commitsFromDB = Commit.objects.filter(repo = repo)
 	commit_count = commitsFromDB.count()
 
+	print "verifying search"
+
 	if search != "":
 		from django.db.models import Q
 
-		if fil_revision:
+		if fil_revision and isInt(search):
 			if fil_user:
 				if fil_comment:
 					print "all three"
-					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(username__username__contains=search) | Q(comment__contains=search))
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | getUserQuery(search) | Q(comment__icontains=search))
 				else:
 					print "revision and username"
-					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(username__username__contains=search))
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | getUserQuery(search))
 			else:
 				if fil_comment:
 					print "revision and comment"
-					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(comment__contains=search))
+					commitsFromDB = commitsFromDB.filter(Q(revision=search) | Q(comment__icontains=search))
 				else:
 					print "revision only"
 					commitsFromDB = commitsFromDB.filter(Q(revision=search))
@@ -102,14 +104,16 @@ def commits(request, repo):
 			if fil_user:
 				if fil_comment:
 					print "username and comment"
-					commitsFromDB = commitsFromDB.filter(Q(username__username__contains=search) | Q(comment__contains=search))
+					commitsFromDB = commitsFromDB.filter(getUserQuery(search) | Q(comment__icontains=search))
 				else:
 					print "username only"
-					commitsFromDB = commitsFromDB.filter(Q(username__username__contains=search))
+					commitsFromDB = commitsFromDB.filter(getUserQuery(search))
 			else:
 				if fil_comment:
 					print "comment only"
-					commitsFromDB = commitsFromDB.filter(Q(comment__contains=search))
+					commitsFromDB = commitsFromDB.filter(Q(comment__icontains=search))
+
+	print "ordering"
 
 	commitsFromDB = commitsFromDB.order_by(order_by_clause)
 
@@ -123,6 +127,7 @@ def commits(request, repo):
 	commits = []
 	i = 0
 	filter_count = commitsFromDB.count()
+	print "filter_count: %d" % (filter_count)
 	if filter_count > 1:
 		for obj in commitsFromDB:
 			commits.append([])
@@ -145,6 +150,19 @@ def commits(request, repo):
 	commits_json = json.dumps(commits, default = dthandler)
 
 	return HttpResponse("{ \"sEcho\": %s, \"iTotalRecords\": \"%s\", \"iTotalDisplayRecords\": \"%s\", \"aaData\": %s }" % (sEcho, commit_count, filter_count, commits_json), mimetype = 'application/json')
+
+def getUserQuery(search):
+	from django.db.models import Q
+
+	return Q(username__username__icontains=search) | Q(username__committer__name__icontains=search) | Q(username__committer__surname__icontains=search)
+
+def isInt(string):
+	try:
+		value = int(string)
+	except ValueError:
+		return False
+
+	return True
 
 def getSortingColumnForCommits(sort_col):
 	return {
